@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button } from './ui/button'
 import Link from 'next/link'
 import Logo from '../public/logo.png';
 import Image from 'next/image';
@@ -14,10 +13,8 @@ const Header = () => {
             </Link>
             <nav aria-label='Main navigation'>
                 <ul className='flex gap-4 items-center'>
-                    <li><Link href="posts">Posts</Link></li>
-                    <li><Link href="./create">Create</Link></li>
+                    <li><Link href="/posts">Posts</Link></li>
                     <li>
-                        {/* <Button aria-label='Login'>Login</Button> */}
                         <LoginButton />
                     </li>
                 </ul>

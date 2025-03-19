@@ -1,15 +1,9 @@
-// app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
-// const supabase = createClient(
-//   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//   process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service role key for write access
-// );
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -18,7 +12,6 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      // Check if user exists in Supabase
       const { data, error } = await supabase
         .from("users")
         .select("*")
@@ -26,7 +19,6 @@ const authOptions: NextAuthOptions = {
         .single();
 
       if (!data) {
-        // If user doesn't exist, insert into Supabase
         const { error: insertError } = await supabase.from("users").insert([
           {
             email: user.email,
@@ -42,20 +34,28 @@ const authOptions: NextAuthOptions = {
 
       return true; // Allow sign-in
     },
-    async session({ session, token }) {
-      if (session?.user) {
-        // Fetch user data from Supabase and attach user ID
+    async jwt({ token, user }) {
+      // If user just signed in, fetch and attach user ID from Supabase
+      if (token.email) {
         const { data } = await supabase
           .from("users")
           .select("id")
-          .eq("email", session.user.email)
+          .eq("email", token.email)
           .single();
+
         if (data) {
-          session.user.id = data.id;
+          token.user_id = data.id; // Store user ID in JWT token
         }
       }
-      return session;
+      return token;
     },
+    async session({ session, token }: { session: any; token: any}) {
+      session.user.user_id = token.user_id
+      return session
+    },
+  },
+  session: {
+    strategy: 'jwt'
   },
   secret: process.env.NEXTAUTH_SECRET, // Required for NextAuth encryption
 };

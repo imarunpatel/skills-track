@@ -7,10 +7,12 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuShortcut, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const LoginButton = () => {
     const { data: session } = useSession();
 
+    console.log('buton',session)
 
     const handleSignout = () => {
         signOut();
@@ -20,7 +22,6 @@ const LoginButton = () => {
 
   if(session) {
     return (
-      // <Button onClick={() => handleSignout()}>Signout</Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className='h-8 w-8'>
@@ -33,17 +34,12 @@ const LoginButton = () => {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="create">
+              <Link href="/create">
                 Create Post
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleSignout}>
+            <DropdownMenuItem onClick={handleSignout} className='text-red-700'>
               Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
@@ -52,7 +48,9 @@ const LoginButton = () => {
       )
   }
 
-  return <Button onClick={() => signIn('google')}>SignIn with google</Button>
+  return <Button onClick={() => signIn('google')}> 
+          <Image src="/google.png" alt="" width={15} height={15} /> Log In
+        </Button>
 }
 
 export default LoginButton
