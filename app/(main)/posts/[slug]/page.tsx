@@ -13,22 +13,7 @@ async function getPost(slug: string) {
     return res.json();
 }
 
-interface Post {
-    id: string;
-    title: string;
-    content: string;
-    cover_image_url: string;
-    published: boolean;
-    updated_at: string;
-    author: {
-        id: string;
-        name: string;
-        email: string;
-        image: string;
-    }
-}
-
-const PostPage = async ({ params }: { params: { slug: string } }) => {
+const PostPage = async ({ params }: { params:  Promise<{ slug: string }> }) => {
     const { slug} = await params;
     const post = await getPost(slug);
     
@@ -67,27 +52,29 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
             </div>
             <div className='py-8 reactMarkDown prose prose-md max-w-full prose-gray dark:prose-invert'>
                 <Markdown 
-                    children={(post.content)}
                     remarkPlugins={[gfm, breaks]}
                     components={{
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     img(props: any) {
                         return (
                         // <span className='relative'>
-                            <Image {...props} className='w-full rounded-md my-6' width={700} height={200} />
+                            <Image {...props} className='w-full rounded-md my-6' alt="Skills Track" width={700} height={200} />
                         // </span>
                         )
                     },
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     code(props: any) {
-                        const { children, className, node, ...rest } = props;
+                        const { children, className, ...rest } = props;
                         const match = /language-(\w+)/.exec(className || "");
                         return match ? (
                         <SyntaxHighlighter
                             {...rest}
                             PreTag="div"
-                            children={String(children).replace(/\n$/, "")}
                             language={match[1]}
                             style={vscDarkPlus}
-                        />
+                        >
+                            {String(children).replace(/\n$/, "")}
+                        </SyntaxHighlighter>
                         ) : (
                         <code
                             {...rest}
@@ -100,7 +87,9 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
                         );
                     },
                     }}
-                />
+                >
+                    {post.content}
+                </Markdown>
             </div>
         </div>
     </div>

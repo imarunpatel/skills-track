@@ -5,6 +5,7 @@ import gfm from "remark-gfm";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import breaks from 'remark-breaks';
 import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { v4 as uuidv4 } from 'uuid';
 
 const PreviewPost = ({ markdown } : { markdown: string }) => {
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -22,20 +23,21 @@ const PreviewPost = ({ markdown } : { markdown: string }) => {
         <div className='w-full flex flex-col max-w-4xl mx-auto px-3'>
           <div className='w-full rounded my-3 p-3 bg-white reactMarkDown prose prose-md prose-gray dark:prose-invert'>
             <Markdown 
-                children={markdown}
                 remarkPlugins={[gfm, breaks]}
                 components={{
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 img(props: any) {
                   return (
-                      <Image {...props} className='w-full rounded-md my-6' width={200} height={200} />
+                      <Image {...props} className='w-full rounded-md my-6' alt="Skills Track" width={200} height={200} />
                   )
                 },
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 code(props: any) {
-                    const { children, className, node, ...rest } = props;
+                    const { children, className, ...rest } = props;
                     const match = /language-(\w+)/.exec(className || "");
     
                     // Generate unique indices for each code block
-                    const codeIndex = React.useId();
+                    const codeIndex = uuidv4();
                     const codeContent = String(children).replace(/\n$/, "");
     
                     return match ? (
@@ -49,7 +51,6 @@ const PreviewPost = ({ markdown } : { markdown: string }) => {
                         <SyntaxHighlighter
                             {...rest}
                             PreTag="div"
-                            children={String(children).replace(/\n$/, "")}
                             language={match[1]}
                             style={anOldHope}
                             customStyle={{
@@ -58,7 +59,9 @@ const PreviewPost = ({ markdown } : { markdown: string }) => {
                               fontSize: '0.875rem',
                               padding: '2.5rem 1rem 1rem 1rem' // Extra padding at top for copy button
                             }}
-                        />
+                        >
+                          {String(children).replace(/\n$/, "")}
+                        </SyntaxHighlighter>
                       </div>
                     ) : (
                     <code
@@ -72,7 +75,9 @@ const PreviewPost = ({ markdown } : { markdown: string }) => {
                     );
                 },
                 }}
-            />
+            >
+              {markdown}
+          </Markdown>
           </div>
         </div>
       </div>

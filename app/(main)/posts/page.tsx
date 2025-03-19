@@ -1,18 +1,20 @@
 import React from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
-import { ActivityIcon, CopyIcon, HashIcon, HomeIcon } from 'lucide-react';
+import { ActivityIcon, HashIcon, HomeIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { formateDate, formatTimeAgo } from '@/lib/helpers/formateDate';
+import { formatTimeAgo } from '@/lib/helpers/formateDate';
 import { IPost } from '@/models/Post';
 
+async function getPosts() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/`, { cache: "no-store" });
+    return res;
+}
 
 const Posts = async () => {
 
-    const data = await fetch('http://localhost:3000/api/posts');
+    const data = await getPosts();
     const posts: { success: boolean; data: IPost[] } = await data.json();
-
-    // console.log('posts', posts);
 
   return (
     
@@ -57,7 +59,7 @@ const Posts = async () => {
                             <h2 className='text-xl'>{post.title}</h2>
                         </div>
                         <div className='max-h-80 overflow-hidden text-center bg-black'>
-                            <Image className='h-full mx-auto' src={post.cover_image_url} alt='' width={500} height={400} />
+                            <Image className='h-full mx-auto' src={post.cover_image_url} alt='Skills Track' style={{ width: 'auto', height: 'auto' }} width={500} height={400} />
                         </div>
                     </Link>
                 ))

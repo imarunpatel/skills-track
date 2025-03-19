@@ -2,7 +2,7 @@
 import React, { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button';
 import slugify from 'slugify';
-import { BoldIcon, CircleX, Code, Heading1, Heading2, Heading3, ImageIcon, Italic, LinkIcon, List, ListOrdered, Loader2, Quote } from 'lucide-react';
+import { BoldIcon, Code, Heading1, Heading2, Heading3, ImageIcon, Italic, LinkIcon, List, ListOrdered, Loader2, Quote } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useSession } from 'next-auth/react';
@@ -82,12 +82,12 @@ const CreatePostClient = () => {
       }
       
       setLoading(false);
-    } catch (err: any) {
+    } catch {
       setLoading(false);
     }
   }
 
-  const insertControl = (control: any) => {
+  const insertControl = (control: IEditorControl) => {
     if (!textareaRef.current) return;
     
     const textarea = textareaRef.current;
@@ -181,7 +181,8 @@ const CreatePostClient = () => {
       label: 'Custom Embed',
       prefix: '<iframe src="',
       suffix: '" width="100%" height="400" frameborder="0"></iframe>',
-      placeholder: url
+      placeholder: url,
+      icon: ''
     });
   };
 
@@ -193,7 +194,8 @@ const CreatePostClient = () => {
       prefix: '```' + language + '\n',
       suffix: '\n```',
       placeholder: 'Enter code here',
-      multiline: true
+      multiline: true,
+      icon: ''
     });
   };
 

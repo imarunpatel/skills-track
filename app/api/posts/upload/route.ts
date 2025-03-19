@@ -1,9 +1,7 @@
-// app/api/upload/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { v4 as uuidv4 } from 'uuid';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/utils/authOptions';
 
 export const config = {
   api: {
@@ -50,7 +48,7 @@ export async function POST(request: NextRequest) {
     const filePath = `covers/${user_id}/${fileName}`;
 
     // Upload to Supabase Storage
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('blog-images')
       .upload(filePath, buffer, {
         contentType: file.type,

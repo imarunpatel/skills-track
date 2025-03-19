@@ -1,7 +1,5 @@
-import Image from 'next/image'
 import React from 'react'
-import Logo from '../public/logo.png';
-import { LocateIcon, GlobeLock, DotIcon } from 'lucide-react'
+import { DotIcon } from 'lucide-react'
 import Link from 'next/link';
 
 const Footer = () => {

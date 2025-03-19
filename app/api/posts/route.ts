@@ -1,19 +1,20 @@
 import { supabase } from "@/lib/supabase";
+import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions } from "../auth/[...nextauth]/route";
 
 // Fetch all posts
 export async function GET() {
     try {
         const { data, error } = await supabase
                 .from('posts')
-                .select(`*, users(name, image)`)
+                .select(`*, users(name, image)`).order("created_at", { ascending: false })
 
         if(error) throw error;
 
         return NextResponse.json({ success: true, data })
-    } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) { 
         return NextResponse.json({ success: false, error: error.message }, { status: 500 })
     }
 }
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
         if(error) throw error;
 
         return NextResponse.json({ success: true, data })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 })
     }

@@ -1,13 +1,14 @@
-import MainImage from '../../public/undraw_online-resume_z4sp.svg';
+import MainImage from '@/public/undraw_online-resume_z4sp.svg';
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TrendingUp } from "lucide-react";
 import { IPost } from "@/models/Post";
+import Link from 'next/link';
 
 export default async function Home() {
 
-  const data = await fetch('http://localhost:3000/api/posts');
+  const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`);
   const posts: { success: boolean; data: IPost[] } = await data.json();
 
   return (
@@ -30,15 +31,14 @@ export default async function Home() {
           <h2 className="flex gap-2 mb-2">Latest discussions: <TrendingUp /> </h2>
           <ul>
             {
-              posts.data.map(post => (
-                <li key={post.id} className="bg-gray-100 px-2 py-1 border-b-[1px] border-blue-800">
-                  <span className="text-neutral-400">#</span> <span>{post.title}</span>
+              posts.data.slice(0, 20).map(post => (
+                <li key={post.id} className="bg-gray-100 border-b-[1px] flex border-blue-800">
+                  <Link href={`/posts/${post.slug}`} className='px-2 py-1 flex-1'>
+                    <span className="text-neutral-400">#</span> <span>{post.title}</span>
+                  </Link>
                 </li>
               ))
             }
-            <li className="bg-gray-100 px-2 py-1 border-b-[1px] border-blue-800">
-              <span className="text-neutral-400">#</span> <span>Top programming language of 2025</span>
-            </li>
           </ul>
         </div>
         {/* <div className="flex-1">
