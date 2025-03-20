@@ -6,10 +6,20 @@ import { TrendingUp } from "lucide-react";
 import { IPost } from "@/models/Post";
 import Link from 'next/link';
 
+async function getData() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`, { cache: 'no-store' });
+  
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  
+  return res.json();
+}
+
 export default async function Home() {
 
-  const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`);
-  const posts: { success: boolean; data: IPost[] } = await data.json();
+  const data = await getData();
+  const posts: { success: boolean; data: IPost[] } = data;
 
   return (
     <div className=" bg-white  dark:bg-black">
