@@ -246,7 +246,7 @@ const CreatePostClient = () => {
                 }
               </div>
             </TooltipProvider>
-            <textarea ref={textareaRef} value={markdown} onChange={(e) => handleSetMarkdown(e)} className='w-full h-full bg-white p-2 outline-0 text-xl' placeholder='Start writing here...'></textarea>
+            <textarea ref={textareaRef} value={markdown} onChange={(e) => handleSetMarkdown(e)} className='w-full h-full bg-white flex-1 p-2 outline-0 text-xl' placeholder='Start writing here...'></textarea>
           </div>
         : <PreviewPost markdown={markdown} />
         }
