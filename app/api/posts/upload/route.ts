@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/authOptions';
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const filePath = `covers/${user_id}/${fileName}`;
 
     // Upload to Supabase Storage
-    const { error } = await supabase.storage
+    const { error } = await supabaseAdmin.storage
       .from('blog-images')
       .upload(filePath, buffer, {
         contentType: file.type,
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get public URL
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from('blog-images')
       .getPublicUrl(filePath);
 

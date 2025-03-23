@@ -1,10 +1,9 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 
 
 export const authOptions: NextAuthOptions = {
-    debug: true,
     providers: [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -13,14 +12,14 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
       async signIn({ user }) {
-        const { data } = await supabase
+        const { data } = await supabaseAdmin
           .from("users")
           .select("*")
           .eq("email", user.email)
           .single();
   
         if (!data) {
-          const { error: insertError } = await supabase.from("users").insert([
+          const { error: insertError } = await supabaseAdmin.from("users").insert([
             {
               email: user.email,
               name: user.name,
@@ -38,7 +37,7 @@ export const authOptions: NextAuthOptions = {
       async jwt({ token }) {
         // If user just signed in, fetch and attach user ID from Supabase
         if (token.email) {
-          const { data } = await supabase
+          const { data } = await supabaseAdmin
             .from("users")
             .select("id")
             .eq("email", token.email)

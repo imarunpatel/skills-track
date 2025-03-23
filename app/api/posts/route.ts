@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 // Fetch all posts
 export async function GET() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
                 .from('posts')
                 .select(`*, users(name, image)`).order("created_at", { ascending: false })
 
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
         }
 
         const { title, slug, content, cover_image_url, published, user_id, created_at, updated_at } = await req.json();
-        const { data, error } = await supabase.from('posts').insert([{ title, slug, content, cover_image_url, published, user_id, created_at, updated_at }]);
+        const { data, error } = await supabaseAdmin.from('posts').insert([{ title, slug, content, cover_image_url, published, user_id, created_at, updated_at }]);
 
         if(error) throw error;
 
