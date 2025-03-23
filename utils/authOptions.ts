@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 
 
 export const authOptions: NextAuthOptions = {
+    debug: true,
     providers: [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID!,
