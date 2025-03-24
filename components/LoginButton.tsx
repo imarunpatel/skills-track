@@ -11,6 +11,9 @@ import { createClient } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { Loader2 } from 'lucide-react';
 
+
+const redirectTo = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`;
+
 const LoginButton = () => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
@@ -39,7 +42,7 @@ const LoginButton = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: redirectTo,
         },
       })
       
