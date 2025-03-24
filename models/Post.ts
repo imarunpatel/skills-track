@@ -6,7 +6,7 @@ export interface IPost {
     cover_image_url: string;
     updated_at: string;
     users: {
-        name: string;
-        image: string;
+        display_name: string;
+        avatar_url: string;
     }
 }

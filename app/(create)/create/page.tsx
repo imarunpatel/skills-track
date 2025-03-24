@@ -1,19 +1,21 @@
 import React from 'react'
 import CreatePostClient from './CreatePostClient'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/utils/authOptions'
+import { createClient } from '@/utils/supabase/server'
 
-const CreatePostPage = async () => {
-  const session = await getServerSession(authOptions);
+export default async function CreatePostPage() {
+  const supabase = await createClient()
+  
+  const { data, error } = await supabase.auth.getUser();
 
-  if(!session) {
+  if (error || !data?.user) {
     redirect('/')
   }
+
   
   return (
     <CreatePostClient />
   )
 }
 
-export default CreatePostPage
+// export default CreatePostPage

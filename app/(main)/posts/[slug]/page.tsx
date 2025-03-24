@@ -15,8 +15,8 @@ async function getPost(slug: string) {
 
 const PostPage = async ({ params }: { params:  Promise<{ slug: string }> }) => {
     const { slug} = await params;
-    const post = await getPost(slug);
-    
+    const post  = await getPost(slug);
+
     if (!post || post.error) {
         return <h1>Post not found</h1>;
       }
@@ -38,8 +38,8 @@ const PostPage = async ({ params }: { params:  Promise<{ slug: string }> }) => {
         <div className='mx-3 px-5 py-4 bg-white'>
             <div className='flex gap-2 items-center'>
                 <Avatar className='h-10 w-10'>
-                    <AvatarImage src={post.author.image} alt="@shadcn" />
-                    <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+                    <AvatarImage src={post.author.avatar_url} alt="@shadcn" />
+                    <AvatarFallback>{post.author.display_name[0]}</AvatarFallback>
                 </Avatar>
                 <div>
                     <p className='font-bold'>{post.author.name}</p>

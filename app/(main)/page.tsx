@@ -21,6 +21,7 @@ export default async function Home() {
   const data = await getData();
   const posts: { success: boolean; data: IPost[] } = data;
 
+
   return (
     <div className=" bg-white  dark:bg-black">
       {/* min-h-[calc(100vh-3rem)] */}
