@@ -1,15 +1,15 @@
-import { supabaseAdmin } from "@/lib/supabase";
-import { authOptions } from "@/utils/authOptions";
-import { getServerSession } from "next-auth";
+// import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 // Fetch all posts
 export async function GET() {
     try {
-        const { data, error } = await supabaseAdmin
+        const supabase = await createClient();
+        const { data, error } = await supabase
                 .from('posts')
-                .select(`*, users(name, image)`).order("created_at", { ascending: false })
-
+                .select(`*, users(display_name, avatar_url)`).order("created_at", { ascending: false })
+        
         if(error) throw error;
 
         return NextResponse.json({ success: true, data })
@@ -22,14 +22,14 @@ export async function GET() {
 // Create post
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
-        
-        if (!session || !session.user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        const supabase = await createClient();
 
-        const { title, slug, content, cover_image_url, published, user_id, created_at, updated_at } = await req.json();
-        const { data, error } = await supabaseAdmin.from('posts').insert([{ title, slug, content, cover_image_url, published, user_id, created_at, updated_at }]);
+        const { data: user_session } = await supabase.auth.getSession();
+
+        const user_id = user_session.session?.user.id;
+        
+        const { title, slug, content, cover_image_url, published, created_at, updated_at } = await req.json();
+        const { data, error } = await supabase.from('posts').insert([{ title, slug, content, cover_image_url, published, user_id, created_at, updated_at }]);
 
         if(error) throw error;
 

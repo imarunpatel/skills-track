@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/utils/authOptions';
+import { createClient } from '@/utils/supabase/server';
 
 export const config = {
   api: {
@@ -11,19 +9,20 @@ export const config = {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify authentication with NextAuth
-    const session = await getServerSession(authOptions);
+    const supabase = await createClient();
 
-    if (!session || !session.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { data } = await supabase.auth.getSession();
+
+    if (!data || !data.session?.user.id) {
+      return NextResponse.json({ error: 'Unauthorized..' }, { status: 401 });
     }
 
+    const userId = data.session?.user.id
 
     // Process the file upload
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const user_id: string = formData.get('user_id') as string;
-
+    
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
@@ -32,12 +31,12 @@ export async function POST(request: NextRequest) {
     if (!file.type.startsWith('image/')) {
       return NextResponse.json({ error: 'File must be an image' }, { status: 400 });
     }
-
+    
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
       return NextResponse.json({ error: 'File size exceeds 5MB limit' }, { status: 400 });
     }
-
+    
     // Convert File to Buffer for Supabase storage
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -45,10 +44,10 @@ export async function POST(request: NextRequest) {
     // Generate unique filename
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    const filePath = `covers/${user_id}/${fileName}`;
+    const filePath = `covers/${userId}/${fileName}`;
 
     // Upload to Supabase Storage
-    const { error } = await supabaseAdmin.storage
+    const { error } = await supabase.storage
       .from('blog-images')
       .upload(filePath, buffer, {
         contentType: file.type,
@@ -60,13 +59,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Get public URL
-    const { data: { publicUrl } } = supabaseAdmin.storage
-      .from('blog-images')
-      .getPublicUrl(filePath);
+    const { data: { publicUrl } } = supabase.storage.from('blog-images').getPublicUrl(filePath);
 
     return NextResponse.json({ url: publicUrl }, { status: 200 });
-  } catch (error) {
-    console.error('Upload error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Internal server error' }, 
       { status: 500 }

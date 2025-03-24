@@ -5,7 +5,6 @@ import slugify from 'slugify';
 import { BoldIcon, Code, Heading1, Heading2, Heading3, ImageIcon, Italic, LinkIcon, List, ListOrdered, Loader2, Quote } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useSession } from 'next-auth/react';
 import { generateSlugPostFix } from '@/lib/helpers/slugPostfix';
 import { IEditorControl } from '@/models/EditorControl';
 import { useRouter } from 'next/navigation';
@@ -38,8 +37,8 @@ const CreatePostClient = () => {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(false);
 
-  const session = useSession();
   const router = useRouter();
+
 
   const handleSetMarkdown = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -63,7 +62,6 @@ const CreatePostClient = () => {
         content: markdown,
         cover_image_url: coverImage,
         published: true,
-        user_id: session.data?.user.user_id,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
@@ -145,7 +143,7 @@ const CreatePostClient = () => {
       setUploadLoading(true);
       const formData = new FormData();
       formData.append('file', file!);
-      formData.append('user_id', session.data?.user.user_id);
+      // formData.append('user_id', "dfkd");
       
       const imageResponse = await fetch('/api/posts/upload', { method: 'POST', body: formData });
 
@@ -156,8 +154,7 @@ const CreatePostClient = () => {
       const { url } = await imageResponse.json();
       setCoverImage(url);
       setUploadLoading(false);
-    } catch (err) {
-      console.error('err', err)
+    } catch {
       setUploadLoading(false);
     }
   };

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import AuthProvider from "@/components/AuthProvider";
 import Header from "@/components/Header";
 import "../globals.css";
  
@@ -14,12 +13,12 @@ export default function CreateLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider>
+    <>
       <Header />
       <main className="flex-1 flex flex-col">
         {children}
       </main>
       {/* <Footer /> */}
-    </AuthProvider>
+    </>
   );
 }

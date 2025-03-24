@@ -15,7 +15,7 @@ const Posts = async () => {
 
     const data = await getPosts();
     const posts: { success: boolean; data: IPost[] } = await data.json();
-
+    
   return (
     
     <div className='flex-1 w-full h-full max-w-6xl mx-auto px-3 flex gap-6 py-8'>
@@ -47,11 +47,11 @@ const Posts = async () => {
                     <Link key={post.id} href={`/posts/${post.slug}`} className='bg-white rounded overflow-hidden flex flex-col gap-2 py-3 mb-4'>
                         <div className='flex gap-2 px-3'>
                             <Avatar className='h-8 w-8'>
-                                <AvatarImage src={post.users.image} alt="@shadcn" />
-                                <AvatarFallback>{post.users.name[0]}</AvatarFallback>
+                                <AvatarImage src={post.users.avatar_url} alt="@shadcn" />
+                                <AvatarFallback>{post.users.display_name[0]}</AvatarFallback>
                             </Avatar>
                             <div>
-                                <div className='text-sm'>@arunpatel</div>
+                                <div className='text-sm'>{post.users.display_name}</div>
                                 <div className='text-xs'>{formatTimeAgo(post.updated_at)} </div>
                             </div>
                         </div>
