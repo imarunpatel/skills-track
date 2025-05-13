@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { createClient } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 
 const redirectTo = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`;
@@ -101,7 +101,7 @@ const LoginButton = () => {
     <>
       <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline"> {loading && <Loader2 className="animate-spin" /> } Login</Button>
+        <Button variant="rounded" className='h-7.5 px-3'> {loading && <Loader2 className="animate-spin" /> } Login <ArrowRight /> </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
